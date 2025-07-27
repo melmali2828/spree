@@ -22,10 +22,10 @@
               </h3>
             <% end %>
           <% end %>
-          <h1 class="text-2xl uppercase tracking-tight mb-4 font-medium">
+          <h1 class="text-2xl tracking-tight mb-4 font-medium">
             <%= product.name %>
           </h1>
-          <%= link_to spree.product_path(product), class: "text-2xl uppercase tracking-tight font-medium hidden" do %>
+          <%= link_to spree.product_path(product), class: "text-2xl tracking-tight font-medium hidden" do %>
             <%= product.name %>
           <% end %>
           <%=
@@ -54,12 +54,12 @@
             <div class="hidden lg:block">
               <% if product.brand %>
                 <%= link_to spree.nested_taxons_path(product.brand), title: product.brand_name do %>
-                  <h3 class="text-sm mt-3 lg:mt-0 inline-block uppercase">
+                  <h3 class="text-sm mt-3 lg:mt-0 inline-block">
                     <%= product.brand_name %>
                   </h3>
                 <% end %>
               <% end %>
-              <h1 class="text-2xl uppercase tracking-tight mb-4 mt-2 font-medium">
+              <h1 class="text-2xl tracking-tight mb-4 mt-2 font-medium">
                 <%= product.name %>
               </h1>
 
