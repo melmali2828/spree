@@ -15,7 +15,7 @@
               <div class="flex-grow gap-1 flex flex-col py-6 md:py-0 border-b md:border-none border-default lg:mb-6">
                 <div <%= block_attributes(block) %>>
                   <h3 class="text-sm py-2"><%= block.preferred_label %></h3>
-                  <ul class="uppercase text-sm tracking-wider !leading-4 flex flex-col gap-1">
+                  <ul class="text-sm tracking-wider !leading-4 flex flex-col gap-1">
                     <% block.links.each do |link| %>
                       <li class='py-2'>
                         <%= page_builder_link_to link, target: ('_blank' if link.open_in_new_tab), rel: ('noopener noreferrer' if link.open_in_new_tab), **link_attributes(link, as_html: false) do %>
