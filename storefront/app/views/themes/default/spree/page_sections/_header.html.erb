@@ -51,7 +51,7 @@
               data-action='click->toggle-menu#hide touch->toggle-menu#hide'
             >
               <%= render 'spree/shared/icons/search', color: section.preferred_text_color %>
-              <span class='hidden lg:block ml-2 text-sm !leading-6 uppercase'><%= Spree.t(:search) %></span>
+              <span class='hidden lg:block ml-2 text-sm !leading-6'><%= Spree.t(:search) %></span>
             </button>
           </div>
         </div>
@@ -92,7 +92,7 @@
                   </span>
                 <% end %>
                 <% if should_render_locale_dropdown? %>
-                  <span class="uppercase <%= should_render_currency_dropdown?.presence && "border-l pl-2" %> flex items-center gap-1">
+                  <span class="<%= should_render_currency_dropdown?.presence && "border-l pl-2" %> flex items-center gap-1">
                     <% country_code = current_locale.to_s.split("-").last %>
                     <%= svg_country_icon(country_code) %>
                     <span ><%= country_code %></span>
