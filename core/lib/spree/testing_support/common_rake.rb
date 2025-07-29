@@ -21,16 +21,16 @@ namespace :common do
 
     skip_javascript = ['spree/api', 'spree/core', 'spree/sample', 'spree/emails'].include?(ENV['LIB_NAME'])
 
-    Spree::DummyGenerator.start [
-      "--lib_name=#{ENV['LIB_NAME']}",
-      "--skip_javascript=#{skip_javascript}"
+    dummy_app_args = [
+      "--lib_name=#{ENV['LIB_NAME']}"
     ]
+    if skip_javascript
+      dummy_app_args << '--skip_javascript'
+    end
+    Spree::DummyGenerator.start dummy_app_args
 
-    # install frontend libraries
     unless skip_javascript
-      system('bin/rails importmap:install')
-      system('bin/rails turbo:install')
-      system('bin/rails stimulus:install')
+      system('bin/rails importmap:install turbo:install stimulus:install')
     end
 
     # install devise if it's not the legacy user, useful for testing storefront
@@ -52,21 +52,39 @@ namespace :common do
       "--authentication=#{args[:authentication]}"
     ]
 
+    if !skip_javascript || ENV['LIB_NAME'] == 'spree/emails'
+      puts 'Precompiling assets...'
+      system('bundle exec rake assets:precompile > /dev/null 2>&1')
+    end
+
+    unless ENV['NO_MIGRATE']
+      puts 'Setting up dummy database...'
+      system('bin/rails db:environment:set RAILS_ENV=test > /dev/null 2>&1')
+      system('bundle exec rake db:drop db:create > /dev/null 2>&1')
+      Spree::DummyModelGenerator.start
+      system('bundle exec rake db:migrate > /dev/null 2>&1')
+    end
+
+    begin
+      require "generators/#{ENV['LIB_NAME']}/install/install_generator"
+      puts 'Running extension installation generator...'
+
+      if ENV['NO_MIGRATE']
+        "#{ENV['LIB_NAME'].camelize}::Generators::InstallGenerator".constantize.start([])
+      else
+        "#{ENV['LIB_NAME'].camelize}::Generators::InstallGenerator".constantize.start(['--auto-run-migrations'])
+      end
+    rescue LoadError
+      puts 'Skipping installation no generator to run...'
+    end
+  end
+
+  task :db_setup do |_t|
     puts 'Setting up dummy database...'
     system('bin/rails db:environment:set RAILS_ENV=test > /dev/null 2>&1')
     system('bundle exec rake db:drop db:create > /dev/null 2>&1')
     Spree::DummyModelGenerator.start
     system('bundle exec rake db:migrate > /dev/null 2>&1')
-
-    begin
-      require "generators/#{ENV['LIB_NAME']}/install/install_generator"
-      puts 'Running extension installation generator...'
-      "#{ENV['LIB_NAME'].camelize}::Generators::InstallGenerator".constantize.start(['--auto-run-migrations'])
-    rescue LoadError
-      puts 'Skipping installation no generator to run...'
-    end
-
-    system('bundle exec rake assets:precompile > /dev/null 2>&1') if !skip_javascript || ENV['LIB_NAME'] == 'spree/emails'
   end
 
   task :seed do |_t|
