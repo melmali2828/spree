@@ -13,7 +13,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th scope="col"><%= Spree.t(:name) %></th>
+            <th scope="col"><%= sort_link search_collection, :name, Spree.t(:name) %></th>
             <th scope="col"><%= Spree.t(:permissions) %></th>
             <th scope="col"></th>
           </tr>
@@ -28,7 +28,7 @@
                 <%= Spree.t(:all) %>
               </td>
               <td class="actions">
-                <%= link_to_edit(role) %>
+                <%= link_to_edit(role, data: { turbo_frame: '_top' }) %>
               </td>
             </tr>
           <% end %>
